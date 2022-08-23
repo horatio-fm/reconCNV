@@ -921,6 +921,10 @@ if (options.vcf_file and not df_vaf.empty):
     logFC_genome.min_border_bottom = 0
     VAF_genome.min_border_top = 0
 
+    url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_build'] + "&position=@chrom:@start-@start"
+    taptool = VAF_genome.select(type=TapTool)
+    taptool.callback = OpenURL(url=url)
+
 # Setting up taptool for the link out to UCSC Genome Browser
 url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_build'] + "&position=@chrom:@start-@end"
 taptool = logFC.select(type=TapTool)
