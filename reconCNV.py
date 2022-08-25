@@ -116,11 +116,11 @@ logging.info("Successfully read the configuration file.")
 def num_to_chr(x):
     if type(x) is str:
         n = int(x)
-    if x == 23:
+    if n == 23:
         return "X"
-    if x == 24:
+    if n == 24:
         return "Y"
-    retunr (str(X))
+    return str(n)
 
 def draw_chr_boundary(figure, chr_boundary, genome, vaf):
     # first line drawn at the beginning of the plotting panel
