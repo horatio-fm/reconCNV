@@ -113,6 +113,15 @@ with open(options.config_file, "r") as json_file:
 logging.info("Successfully read the configuration file.")
 
 
+def num_to_chr(x):
+    if type(x) is str:
+        n = int(x)
+    if x == 23:
+        return "X"
+    if x == 24:
+        return "Y"
+    retunr (str(X))
+
 def draw_chr_boundary(figure, chr_boundary, genome, vaf):
     # first line drawn at the beginning of the plotting panel
     chr_temp_line = Span(location=0,
@@ -583,7 +592,7 @@ if (options.annot_file):
 
 if (options.vcf_file and not df_vaf.empty):
     source_vaf = ColumnDataSource(data=dict(
-        chrom=df_vaf.chromosome,
+        chrom=df_vaf.chromosome.apply(num_to_chr).apply(num_to_chr),
         start=df_vaf.start,
         genome_cumsum=df_vaf.genome_cumsum,
         AF=df_vaf.AF,
@@ -594,7 +603,7 @@ if (options.vcf_file and not df_vaf.empty):
     if (options.seg_file):
         if (config['files']['segmentation_file']['column_names']['start'] == "start"):
             source_vaf_seg = ColumnDataSource(data=dict(
-                chrom=df_vaf_seg[config['files']['segmentation_file']['column_names']['chromosome']],
+                chrom=df_vaf_seg[config['files']['segmentation_file']['column_names']['chromosome']].apply(num_to_chr),
                 start=df_vaf_seg.start_y,
                 end=df_vaf_seg[config['files']['segmentation_file']['column_names']['end']],
                 AF=df_vaf_seg.AF,
@@ -602,7 +611,7 @@ if (options.vcf_file and not df_vaf.empty):
                 genome_cumsum_end=df_vaf_seg.genome_cumsum_end))
         else:
             source_vaf_seg = ColumnDataSource(data=dict(
-                chrom=df_vaf_seg[config['files']['segmentation_file']['column_names']['chromosome']],
+                chrom=df_vaf_seg[config['files']['segmentation_file']['column_names']['chromosome']].apply(num_to_chr),
                 start=df_vaf_seg[config['files']['segmentation_file']['column_names']['start']],
                 end=df_vaf_seg[config['files']['segmentation_file']['column_names']['end']],
                 AF=df_vaf_seg.AF,
@@ -611,7 +620,7 @@ if (options.vcf_file and not df_vaf.empty):
 
     if (options.gene_file):
         source_vaf_gene = ColumnDataSource(data=dict(
-            chrom=df_vaf_gene.chromosome,
+            chrom=df_vaf_gene.chromosome.apply(num_to_chr),
             start=df_vaf_gene.gene_start,
             end=df_vaf_gene.gene_end,
             AF=df_vaf_gene.AF,
