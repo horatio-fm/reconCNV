@@ -475,7 +475,7 @@ logging.info("Writing visualization to " + outdir + "/" + output_filename + "...
 output_file(outdir + "/" + output_filename, title=title_name + ' reconCNV Plot')
 
 source = ColumnDataSource(data=dict(
-    chrom=data[config['files']['ratio_file']['column_names']['chromosome']],
+    chrom=data[config['files']['ratio_file']['column_names']['chromosome']].apply(num_to_chr),
     start=data[config['files']['ratio_file']['column_names']['start']],
     genome_cumsum=data.genome_cumsum,
     end=data[config['files']['ratio_file']['column_names']['end']],
@@ -487,7 +487,7 @@ source = ColumnDataSource(data=dict(
         'weight_scaling_factor']))
 
 source_copy = ColumnDataSource(data=dict(
-    chrom=data[config['files']['ratio_file']['column_names']['chromosome']],
+    chrom=data[config['files']['ratio_file']['column_names']['chromosome']].apply(num_to_chr),
     start=data[config['files']['ratio_file']['column_names']['start']],
     genome_cumsum=data.genome_cumsum,
     end=data[config['files']['ratio_file']['column_names']['end']],
@@ -504,7 +504,7 @@ if (options.seg_file and
         config['files']['segmentation_file']['column_names']['minor_cn'] in seg.columns) and
         config['files']['segmentation_file']['column_names']['cell_frac'] in seg.columns)):
     source_seg = ColumnDataSource(data=dict(
-        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']],
+        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']].apply(num_to_chr),
         start=seg[config['files']['segmentation_file']['column_names']['start']],
         end=seg[config['files']['segmentation_file']['column_names']['end']],
         logFC=seg[config['files']['segmentation_file']['column_names']['log2FC']],
@@ -521,7 +521,7 @@ elif (options.seg_file and
         (config['files']['segmentation_file']['column_names']['major_cn'] in seg.columns and
         config['files']['segmentation_file']['column_names']['minor_cn'] in seg.columns)):
     source_seg = ColumnDataSource(data=dict(
-        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']],
+        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']].apply(num_to_chr),
         start=seg[config['files']['segmentation_file']['column_names']['start']],
         end=seg[config['files']['segmentation_file']['column_names']['end']],
         logFC=seg[config['files']['segmentation_file']['column_names']['log2FC']],
@@ -536,7 +536,7 @@ elif (options.seg_file and
 elif (options.seg_file and
     config['files']['segmentation_file']['column_names']['cell_frac'] in seg.columns):
     source_seg = ColumnDataSource(data=dict(
-        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']],
+        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']].apply(num_to_chr),
         start=seg[config['files']['segmentation_file']['column_names']['start']],
         end=seg[config['files']['segmentation_file']['column_names']['end']],
         logFC=seg[config['files']['segmentation_file']['column_names']['log2FC']],
@@ -548,7 +548,7 @@ elif (options.seg_file and
         gene=seg[config['files']['segmentation_file']['column_names']['gene']]))
 elif (options.seg_file):
     source_seg = ColumnDataSource(data=dict(
-        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']],
+        chrom=seg[config['files']['segmentation_file']['column_names']['chromosome']].apply(num_to_chr),
         start=seg[config['files']['segmentation_file']['column_names']['start']],
         end=seg[config['files']['segmentation_file']['column_names']['end']],
         logFC=seg[config['files']['segmentation_file']['column_names']['log2FC']],
@@ -561,7 +561,7 @@ elif (options.seg_file):
 
 if (options.gene_file):
     source_gene = ColumnDataSource(data=dict(
-        chrom=gen[config['files']['gene_file']['column_names']['chromosome']],
+        chrom=gen[config['files']['gene_file']['column_names']['chromosome']].apply(num_to_chr),
         start=gen[config['files']['gene_file']['column_names']['start']],
         end=gen[config['files']['gene_file']['column_names']['end']],
         logFC=gen[config['files']['gene_file']['column_names']['log2FC']],
@@ -573,7 +573,7 @@ if (options.gene_file):
 
 if (options.seg_blacklist and config['plots']['logFC_genome_plot']['artifact_mask']['visibility'] == "on"):
     source_seg_blacklist = ColumnDataSource(data=dict(
-        chrom=seg_blacklist['chromosome'],
+        chrom=seg_blacklist['chromosome'].apply(num_to_chr),
         start=seg_blacklist['start'],
         end=seg_blacklist['end'],
         genome_cumsum_start=seg_blacklist['genome_cumsum_start'],
@@ -581,7 +581,7 @@ if (options.seg_blacklist and config['plots']['logFC_genome_plot']['artifact_mas
 
 if (options.annot_file):
     source_gene_track = ColumnDataSource(data=dict(
-        chrom=gene_track[config['files']['annotation_file']['column_names']['chromosome']],
+        chrom=gene_track[config['files']['annotation_file']['column_names']['chromosome']].apply(num_to_chr),
         start=gene_track[config['files']['annotation_file']['column_names']['exon_start']],
         end=gene_track[config['files']['annotation_file']['column_names']['exon_end']],
         txid=gene_track[config['files']['annotation_file']['column_names']['tx_id']],
