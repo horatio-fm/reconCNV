@@ -940,7 +940,8 @@ url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_b
 taptool.callback = OpenURL(url=url)
 
 if (options.vcf_file and not df_vaf.empty):
-    url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_build'] + "&position=@chrom:@start-@start"
+    # url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_build'] + "&position=@chrom:@start-@start"
+    url = "http://127.0.0.1:60151/goto?locus=chr@chrom:@start-@start"
     taptool = VAF_genome.select(type=TapTool)
     taptool.callback = OpenURL(url=url)
 
