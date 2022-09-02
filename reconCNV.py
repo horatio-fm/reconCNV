@@ -19,6 +19,8 @@ from bokeh.models.widgets import DataTable, TableColumn, Div
 from bokeh.plotting import *
 from bokeh.transform import factor_cmap
 from bokeh.resources import INLINE
+from bokeh import events
+from bokeh.events import DoubleTap, Tap
 
 parser = argparse.ArgumentParser(description="Visualize CNV data from short read sequencing data.")
 
@@ -933,18 +935,56 @@ if (options.vcf_file and not df_vaf.empty):
 # Setting up taptool for the link out to UCSC Genome Browser
 url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_build'] + "&position=@chrom:@start-@end"
 taptool = logFC.select(type=TapTool)
-taptool.callback = OpenURL(url=url)
+# taptool.callback = OpenURL(url=url)
 
 taptool = logFC_genome.select(type=TapTool)
 url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_build'] + "&position=@chrom:@start-@end"
-taptool.callback = OpenURL(url=url)
+# taptool.callback = OpenURL(url=url)
+
+non_vaf_custon_js_code = """
+    var inds = source.selected.indices;
+    if (inds.length == 0)
+        return
+    var cmd;
+    var  ctrl_key = 17;
+    if(window.pressedKeys[ctrl_key]) {
+        cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
+        //console.log(cmd);
+        window.open(cmd);
+        return;
+    }
+    cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
+    console.log(cmd);
+    window.open(cmd).close();
+
+    """
+call0 = CustomJS(args=dict(source=source), code=non_vaf_custon_js_code)
+source.selected.js_on_change("indices", call0)
 
 if (options.vcf_file and not df_vaf.empty):
     # url = "https://genome.ucsc.edu/cgi-bin/hgTracks?db=" + config['files']['genome_build'] + "&position=@chrom:@start-@start"
     url = "http://127.0.0.1:60151/goto?locus=chr@chrom:@start-@start"
     taptool = VAF_genome.select(type=TapTool)
-    taptool.callback = OpenURL(url=url)
+    # taptool.callback = OpenURL(url=url)
 
+    call1 = CustomJS(args=dict(source=source_vaf), code="""
+    var inds = source.selected.indices;
+    if (inds.length == 0)
+        return
+    var cmd;
+    var  ctrl_key = 17;
+    if(window.pressedKeys[ctrl_key]) {
+        cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
+        //console.log(cmd);
+        window.open(cmd);
+        return;
+    }
+    cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
+    console.log(cmd);
+    window.open(cmd).close();
+    
+    """)
+    source_vaf.selected.js_on_change("indices", call1)
 
 chr_boundary = pd.concat([data[config['files']['ratio_file']['column_names']['chromosome']],
                           data.ind],
@@ -966,8 +1006,8 @@ if (options.vcf_file and not df_vaf.empty):
                                              as_index=False).max()
     draw_chr_boundary(VAF_genome, chr_boundary, genome=True, vaf=True)
 
-    taptool = VAF_genome.select(type=TapTool)
-    taptool.callback = OpenURL(url=url)
+    # taptool = VAF_genome.select(type=TapTool)
+    # taptool.callback = OpenURL(url=url)
 
 # Setting up data table
 columns = [
@@ -1252,5 +1292,33 @@ if (config['plots']['bokeh_js_css_code'] == "INLINE"):
     save(final_fig, resources=INLINE)
 else:
     save(final_fig)
+
+# adds js code for for checking if keys are pressed.
+with open(outdir + "/" + output_filename) as fp:
+    all_lines = fp.readlines()
+
+with open(outdir + "/" + output_filename, "w") as fp:
+    for idx, line in enumerate(all_lines):
+        if '<script type="text/javascript">' in line:
+            if '(function() {' in all_lines[idx + 1]:
+                if 'var fn = function() {' in all_lines[idx + 2]:
+                    if 'Bokeh.safely(function() {' in all_lines[idx + 3]:
+                        fp.write(line)
+                        fp.write('''
+window.pressedKeys = {};
+window.onkeydown = (e) => {
+    window.pressedKeys[e.keyCode] = true;
+    //console.log(window.pressedKeys[ctrl_key]); 
+    //console.log(e.keyCode); 
+}
+
+window.onkeyup = (e) => {
+    window.pressedKeys[e.keyCode] = false; 
+}
+''')
+                        continue
+        fp.write(line)
+
+
 # show(final_fig)
 logging.info("Done!")
