@@ -117,6 +117,8 @@ logging.info("Successfully read the configuration file.")
 
 def num_to_chr(x):
     if type(x) is str:
+        if not x.isdigit():
+            return x
         n = int(x)
     if n == 23:
         return "X"
