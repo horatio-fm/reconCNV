@@ -957,8 +957,9 @@ non_vaf_custon_js_code = """
     }
     cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
     console.log(cmd);
-    window.open(cmd).close();
-
+    //window.open(cmd).close();
+    var wnd = window.open(cmd);  
+    setTimeout(function(){  wnd.close(); },2000); 
     """
 call0 = CustomJS(args=dict(source=source), code=non_vaf_custon_js_code)
 source.selected.js_on_change("indices", call0)
@@ -983,7 +984,9 @@ if (options.vcf_file and not df_vaf.empty):
     }
     cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
     console.log(cmd);
-    window.open(cmd).close();
+    //window.open(cmd).close();
+    var wnd = window.open(cmd);  
+    setTimeout(function(){  wnd.close(); },2000); 
     
     """)
     source_vaf.selected.js_on_change("indices", call1)
