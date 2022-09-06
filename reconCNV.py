@@ -949,17 +949,20 @@ non_vaf_custon_js_code = """
         return
     var cmd;
     var  ctrl_key = 17;
+    
     if(window.pressedKeys[ctrl_key]) {
-        cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
-        //console.log(cmd);
-        window.open(cmd);
+        cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
+        console.log(cmd);
+        //window.open(cmd).close();
+        var wnd = window.open(cmd);  
+        setTimeout(function(){  wnd.close(); },2000); 
         return;
     }
-    cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
-    console.log(cmd);
-    //window.open(cmd).close();
-    var wnd = window.open(cmd);  
-    setTimeout(function(){  wnd.close(); },2000); 
+    
+    cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
+    //console.log(cmd);
+    window.open(cmd);
+     
     """
 call0 = CustomJS(args=dict(source=source), code=non_vaf_custon_js_code)
 source.selected.js_on_change("indices", call0)
@@ -977,16 +980,16 @@ if (options.vcf_file and not df_vaf.empty):
     var cmd;
     var  ctrl_key = 17;
     if(window.pressedKeys[ctrl_key]) {
-        cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
-        //console.log(cmd);
-        window.open(cmd);
+        cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
+        console.log(cmd);
+        //window.open(cmd).close();
+        var wnd = window.open(cmd);  
+        setTimeout(function(){  wnd.close(); },2000); 
         return;
     }
-    cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
-    console.log(cmd);
-    //window.open(cmd).close();
-    var wnd = window.open(cmd);  
-    setTimeout(function(){  wnd.close(); },2000); 
+    cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
+    //console.log(cmd);
+    window.open(cmd);
     
     """)
     source_vaf.selected.js_on_change("indices", call1)
