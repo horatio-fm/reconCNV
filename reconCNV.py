@@ -951,6 +951,7 @@ non_vaf_custon_js_code = """
     var  ctrl_key = 17;
     
     if(window.pressedKeys[ctrl_key]) {
+        window.pressedKeys[ctrl_key] = false;
         cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.end[inds[0]]}`;
         console.log(cmd);
         //window.open(cmd).close();
@@ -980,6 +981,7 @@ if (options.vcf_file and not df_vaf.empty):
     var cmd;
     var  ctrl_key = 17;
     if(window.pressedKeys[ctrl_key]) {
+        window.pressedKeys[ctrl_key] = false;
         cmd = `http://127.0.0.1:60151/goto?locus=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
         console.log(cmd);
         //window.open(cmd).close();
@@ -987,7 +989,8 @@ if (options.vcf_file and not df_vaf.empty):
         setTimeout(function(){  wnd.close(); },2000); 
         return;
     }
-    cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
+    //cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}`;
+    cmd = `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&highlight=hg19.chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]}-${source.data.start[inds[0]]}&position=chr${source.data.chrom[inds[0]]}:${source.data.start[inds[0]]-20}-${source.data.start[inds[0]]+20}`;
     //console.log(cmd);
     window.open(cmd);
     
@@ -1316,12 +1319,15 @@ with open(outdir + "/" + output_filename, "w") as fp:
 window.pressedKeys = {};
 window.onkeydown = (e) => {
     window.pressedKeys[e.keyCode] = true;
-    //console.log(window.pressedKeys[ctrl_key]); 
-    //console.log(e.keyCode); 
+    console.log(window.pressedKeys[ctrl_key]); 
+    console.log(e.keyCode); 
 }
 
 window.onkeyup = (e) => {
-    window.pressedKeys[e.keyCode] = false; 
+    //window.pressedKeys[e.keyCode] = false;
+    console.log(window.pressedKeys[ctrl_key]); 
+    console.log(e.keyCode); 
+     
 }
 ''')
                         continue
